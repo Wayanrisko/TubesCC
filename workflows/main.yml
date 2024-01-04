@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Ubah jika nama branch Anda berbeda
+      - main/templates  # Ubah jika nama branch Anda berbeda
 
 jobs:
   deploy:
