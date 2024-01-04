@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediksi Harga Beras</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Prediksi Harga Beras</h1>
+    <label for="month">Masukkan Bulan (1-12):</label>
+    <input type="number" id="month" name="month" min="1" max="12" required>
+    <button onclick="predict()">Predict</button>
+    <div id="graph"></div>
+    <div id="result"></div>
+
+    <script>
+        function predict() {
+            var month = document.getElementById('month').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'month=' + month,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+
+                // Extract data for plotting
+                var months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                var predicted_price = data.predicted_price;
+                var all_predictions = data.all_predictions;
+
+                // Create a plot
+                var plot = {
+                    x: months,
+                    y: all_predictions,
+                    type: 'line',
+                    mode: 'lines+markers',
+                    marker: {color: 'blue'},
+                };
+
+                // Display the plot in the 'graph' div
+                Plotly.newPlot('graph', [plot], {title: 'Prediksi Harga Beras untuk tahun 2024'});
+
+                // Display the result below the graph
+                document.getElementById('result').innerHTML = '<p>Prediksi harga pada bulan ' + months[month - 1] + ':Rp.' + predicted_price + '</p>';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
